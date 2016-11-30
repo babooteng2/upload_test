@@ -26,13 +26,15 @@ public class UploadController {
 	public void uploadForm(){}
 	
 	@RequestMapping(value="/uploadForm", method=RequestMethod.POST)
-	public void uploadForm(MultipartFile file,Model model) throws Exception{
+	public String uploadForm(MultipartFile file,Model model) throws Exception{
 		logger.info("originalName : " + file.getOriginalFilename());
 		logger.info("size : " + file.getSize());
 		logger.info("contentType : " + file.getContentType());
 		
 		String savedName = uploadFile(file.getOriginalFilename(), file.getBytes());
 		model.addAttribute("savedName", savedName);
+		
+		return "uploadResult";
 	}
 	
 	private String uploadFile(String originalName, byte[] fileData) throws Exception {
