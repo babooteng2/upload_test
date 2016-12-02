@@ -39,11 +39,46 @@ $(document).ready(function(){
 			processData: false,			
 			contentType: false,
 			success: function(data) {
-				alert(data);
+				var str = "";
+				if(checkImageType(data)){
+					str = "<div>"
+						+ "<a href='displayFile?fileName=" + getImageLink(data) + "'>"
+						+ "<img src='displayFile?fileName=" + data + "'/>"
+						+ getImageLink(data) + "</a></div>";
+				}else{
+					str = "<div><a href='displayFile?fileName=" + data + "'>"
+						+ getOriginalName(data) 
+						+ "</a></div>";
+				}
+				$(".uploadedList").append(str);
 			}
 		})
 	});
 });
+
+function checkImageType(fileName) {
+	var pattern = /jpg|gif|png|jpeg/i;
+	return fileName.match(pattern);
+}
+
+function getOriginalName(fileName) {
+	if(checkImageType(fileName)){
+		return;
+	}
+	var idx = fileName.indexOf("_") + 1;
+	return fileName.substr(idx);
+}
+
+function getImageLink(fileName) {
+	if(!checkImageType(fileName)){
+		return;
+	}
+	// /년/월/일 경로 추출
+	var front = fileName.substr(0,12);
+	// 파일 이름앞의 s_ 제거
+	var end = fileName.substr(14);
+	return front + end;
+}
 </script>
 </head>
 <body>
