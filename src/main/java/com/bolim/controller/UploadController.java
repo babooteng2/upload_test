@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bolim.util.UploadFileUtils;
+
 @Controller
 public class UploadController {
 	private static final Logger logger = LoggerFactory.getLogger(UploadController.class);
@@ -56,9 +58,11 @@ public class UploadController {
 					method=RequestMethod.POST,
 					produces="text/plain;charset=UTF-8")
 	public ResponseEntity<String> uploadAjax(MultipartFile file) throws Exception {
-		logger.info("originalName : " + file.getOriginalFilename());
-		logger.info("size : " + file.getSize());
-		logger.info("contentType : " + file.getContentType());
-		return new ResponseEntity<>(file.getOriginalFilename(),HttpStatus.CREATED);
+		logger.info("originalName : " + file.getOriginalFilename());		
+		return new ResponseEntity<>(
+				UploadFileUtils.uploadFile(uploadPath,
+						file.getOriginalFilename(),
+						file.getBytes()),
+				HttpStatus.CREATED);
 	}
 }
