@@ -77,7 +77,7 @@ public class UploadController {
 	public ResponseEntity<byte[]> displayFile(String fileName) throws Exception {
 		InputStream in = null;
 		ResponseEntity<byte[]> entity = null;
-		logger.info("fileName : " + fileName);
+		logger.info("display fileName : " + fileName);
 		try{
 			String formatName = fileName.substring(fileName.lastIndexOf(".")+1);
 			MediaType mType = MediaUtils.getMediaType(formatName);
@@ -102,5 +102,23 @@ public class UploadController {
 			in.close();
 		}
 		return entity;
+	}
+	
+	@ResponseBody
+	@RequestMapping("/deleteFile")
+	public ResponseEntity<String> deleteFile(String fileName) throws Exception {
+		logger.info("delete fileName : " + fileName);
+		String formatName = fileName.substring(fileName.lastIndexOf(".") + 1);
+		MediaType mType = MediaUtils.getMediaType(formatName);		
+		if(mType!=null){
+			String front = fileName.substring(0, 12);
+			String end = fileName.substring(14);
+			new File(uploadPath + (front+end).replace("/", File.separator)).delete();
+		}
+		
+		logger.info("[ original File name : " + uploadPath + fileName.replace("/", File.separator) + " ] ");
+		new File(uploadPath + fileName.replace("/", File.separator)).delete();
+		
+		return new ResponseEntity<String>("deleted",HttpStatus.OK);
 	}
 }

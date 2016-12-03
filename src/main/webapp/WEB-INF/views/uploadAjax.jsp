@@ -16,6 +16,9 @@
 		font-weight: bold;
 		color: gray;
 	}
+	.close-x {
+		padding-left: 30px;
+	}
 </style>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script>
@@ -44,15 +47,34 @@ $(document).ready(function(){
 					str = "<div>"
 						+ "<a href='displayFile?fileName=" + getImageLink(data) + "'>"
 						+ "<img src='displayFile?fileName=" + data + "'/>"
-						+ getImageLink(data) + "</a></div>";
+						+ getImageLink(data) + "</a>"
+						+ '<a href="javascript:;" class="close-x" data-src=\"'+data+'\">X</a>'
+						+ "</div>";
 				}else{
 					str = "<div><a href='displayFile?fileName=" + data + "'>"
 						+ getOriginalName(data) 
-						+ "</a></div>";
+						+ "</a>"
+						+ '<a href="javascript:;" class="close-x" data-src=\"'+data+'\">X</a>'
+						+ "</div>";
 				}
 				$(".uploadedList").append(str);
 			}
 		})
+	});	
+});
+
+$(document).on("click",".close-x",function(e){
+	var that = $(this); 
+	var data = that.attr("data-src")
+	$.ajax({
+		url: '/deleteFile',
+		type: 'POST',
+		data: {fileName:data},			
+		success:function(result){
+			if(result == 'deleted'){
+				that.parent("div").remove();
+			}
+		}
 	});
 });
 
